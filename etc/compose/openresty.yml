@@ -17,10 +17,10 @@ networks:
   # elasticpot_local:
   heralding_local:
   # honeysap_local:
-  mailoney_local:
+  # mailoney_local:
   # medpot_local:
   # rdpy_local:
-  tanner_local:
+  # tanner_local:
   ewsposter_local:
   spiderfoot_local:
 
@@ -39,7 +39,8 @@ services:
     volumes:
       - "/data/openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
       - "/data/openresty/log:/usr/local/openresty/nginx/logs"
-      
+    
+
 # # Adbhoney service
 #   adbhoney:
 #     container_name: adbhoney
@@ -367,41 +368,41 @@ services:
 
 ### Snare / Tanner
 # Tanner Redis Service
-  tanner_redis:
-    container_name: tanner_redis
-    restart: always
-    tty: true
-    networks:
-     - tanner_local
-    image: "dtagdevsec/redis:2006"
-    read_only: true
+#   tanner_redis:
+#     container_name: tanner_redis
+#     restart: always
+#     tty: true
+#     networks:
+#      - tanner_local
+#     image: "dtagdevsec/redis:2006"
+#     read_only: true
 
-## PHP Sandbox service
-  tanner_phpox:
-    container_name: tanner_phpox
-    restart: always
-    tty: true
-    networks:
-     - tanner_local
-    image: "dtagdevsec/phpox:2006"
-    read_only: true
+# ## PHP Sandbox service
+#   tanner_phpox:
+#     container_name: tanner_phpox
+#     restart: always
+#     tty: true
+#     networks:
+#      - tanner_local
+#     image: "dtagdevsec/phpox:2006"
+#     read_only: true
 
-## Tanner API Service
-  tanner_api:
-    container_name: tanner_api
-    restart: always
-    tmpfs:
-     - /tmp/tanner:uid=2000,gid=2000
-    tty: true
-    networks:
-     - tanner_local
-    image: "dtagdevsec/tanner:2006"
-    read_only: true
-    volumes:
-     - /data/tanner/log:/var/log/tanner
-    command: tannerapi
-    depends_on:
-     - tanner_redis
+# ## Tanner API Service
+#   tanner_api:
+#     container_name: tanner_api
+#     restart: always
+#     tmpfs:
+#      - /tmp/tanner:uid=2000,gid=2000
+#     tty: true
+#     networks:
+#      - tanner_local
+#     image: "dtagdevsec/tanner:2006"
+#     read_only: true
+#     volumes:
+#      - /data/tanner/log:/var/log/tanner
+#     command: tannerapi
+#     depends_on:
+#      - tanner_redis
 
 ## Tanner WEB Service
 #  tanner_web:
@@ -421,42 +422,60 @@ services:
 #     - tanner_redis
 
 ## Tanner Service
-  tanner:
-    container_name: tanner
-    restart: always
-    tmpfs:
-     - /tmp/tanner:uid=2000,gid=2000
-    tty: true
-    networks:
-     - tanner_local
-    image: "dtagdevsec/tanner:2006"
-    command: tanner
-    read_only: true
-    volumes:
-     - /data/tanner/log:/var/log/tanner
-     - /data/tanner/files:/opt/tanner/files
-    depends_on:
-     - tanner_api
-#     - tanner_web
-     - tanner_phpox
+#   tanner:
+#     container_name: tanner
+#     restart: always
+#     tmpfs:
+#      - /tmp/tanner:uid=2000,gid=2000
+#     tty: true
+#     networks:
+#      - tanner_local
+#     image: "dtagdevsec/tanner:2006"
+#     command: tanner
+#     read_only: true
+#     volumes:
+#      - /data/tanner/log:/var/log/tanner
+#      - /data/tanner/files:/opt/tanner/files
+#     depends_on:
+#      - tanner_api
+# #     - tanner_web
+#      - tanner_phpox
 
-## Snare Service
-  snare:
-    container_name: snare
-    restart: always
-    tty: true
-    networks:
-     - tanner_local
-    ports:
-     - "80:80"
-    image: "dtagdevsec/snare:2006"
-    depends_on:
-     - tanner
+# ## Snare Service
+#   snare:
+#     container_name: snare
+#     restart: always
+#     tty: true
+#     networks:
+#      - tanner_local
+#     ports:
+#      - "80:80"
+#     image: "dtagdevsec/snare:2006"
+#     depends_on:
+#      - tanner
 
 
 ##################
 #### NSM
 ##################
+
+# Teler service
+  teler:
+    container_name: teler_analysis
+    image: "kitabisa/teler"
+    restart: always
+    depends_on:
+      logstash:
+        condition: service_healthy
+    volumes: 
+      - "/data/openresty/log/:/input/"
+      - "/data/teler/teler-resources/:/.cache/teler-resources/"
+      - "/data/teler/output/:/output/"
+      - "/data/teler/conf/:/conf/"
+    entrypoint: /bin/sh
+    command: /conf/start.sh
+    tty: true
+
 
 # Fatt service
   fatt:
@@ -563,7 +582,7 @@ services:
     image: "dtagdevsec/logstash:2006"
     volumes:
      - /data:/data
-     - /opt/tpot/etc/compose/tmp/logstash.conf:/etc/logstash/conf.d/logstash.conf
+     - /data/logstash/conf/:/etc/logstash/conf.d/
 
 
 ## Elasticsearch-head service

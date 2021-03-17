@@ -1,10 +1,10 @@
 - name: Finally rebooting T-Pot
-  ansible.builtin.command: shutdown -r now
+  command: shutdown -r now
   async: 1
   poll: 0
 
 - name: Next login options
-  ansible.builtin.debug:
+  debug:
     msg:
     - "*****    SSH Access:"
     - "*****    ssh {{ ansible_user }}@{{ ansible_host }} -p 64295"

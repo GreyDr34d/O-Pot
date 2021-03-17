@@ -40,13 +40,18 @@ variable "availability_zone" {
 }
 
 variable "flavor" {
-  default = "s3.medium.8"
+  default = "s2.medium.8"
   description = "Select a compute flavor"
 }
 
 variable "key_pair" {
   #default = ""
   description = "Specify your SSH key pair"
+}
+
+variable "image_id" {
+  default = "fb7b0c9c-8b20-4e3f-832c-ea38c981c282"
+  description = "Select a Debian 10 base image id"
 }
 
 variable "volume_size" {
@@ -57,7 +62,7 @@ variable "volume_size" {
 # These will go in the generated tpot.conf file
 variable "tpot_flavor" {
   default = "STANDARD"
-  description = "Specify your tpot flavor [STANDARD, SENSOR, INDUSTRIAL, COLLECTOR, NEXTGEN, MEDICAL]"
+  description = "Specify your tpot flavor [STANDARD, SENSOR, INDUSTRIAL, COLLECTOR, NEXTGEN]"
 }
 
 variable "web_user" {

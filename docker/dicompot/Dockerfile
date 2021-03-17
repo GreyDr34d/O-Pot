@@ -1,7 +1,8 @@
-FROM alpine:3.13
+FROM alpine:3.12
 #
 # Setup apk
-RUN apk -U add \
+RUN sed -i 's/dl-cdn/dl-2/g' /etc/apk/repositories && \
+    apk -U add \
                    build-base \
                    git \
                    g++ && \

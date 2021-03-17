@@ -1,10 +1,11 @@
-FROM alpine:3.13
+FROM alpine:3.12
 #
 # Include dist
 ADD dist/ /root/dist/
 #
 # Install packages
-RUN apk -U --no-cache add \
+RUN sed -i 's/dl-cdn/dl-2/g' /etc/apk/repositories && \
+    apk -U --no-cache add \
             build-base \
             git \
             libffi-dev \
@@ -13,7 +14,6 @@ RUN apk -U --no-cache add \
 	    python3 \
             python3-dev \
             py3-cffi \
-	    py3-cryptography \
             py3-ipaddress \
 	    py3-lxml \
 	    py3-mysqlclient \
@@ -25,7 +25,7 @@ RUN apk -U --no-cache add \
 # Setup ewsposter
     git clone https://github.com/telekom-security/ewsposter /opt/ewsposter && \
     cd /opt/ewsposter && \
-    git checkout 46cd801fb444f1fb0a90418ab46e5977ec0a90b6 && \
+    git checkout 09508938de3a28856114f6ea5f3f529fdb776d79 && \
     mkdir -p /opt/ewsposter/spool /opt/ewsposter/log && \
 #
 # Setup user and groups

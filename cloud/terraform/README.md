@@ -1,7 +1,7 @@
 # T-Pot Terraform
 This [Terraform](https://www.terraform.io/) configuration can be used to launch a virtual machine, bootstrap any dependencies and install T-Pot in a single step.  
 Configuration for Amazon Web Services (AWS) and Open Telekom Cloud (OTC) is currently included.
-This can easily be extended to support other [Terraform providers](https://registry.terraform.io/browse/providers?category=public-cloud%2Ccloud-automation%2Cinfrastructure).
+This can easily be extended to support other [Terraform providers](https://www.terraform.io/docs/providers/index.html).
 
 [Cloud-init](https://cloudinit.readthedocs.io/en/latest/) is used to bootstrap the instance and install T-Pot on startup.
 
@@ -93,6 +93,7 @@ In `otc/variables.tf`, you can change the additional variables:
 * `availability_zone`
 * `flavor`
 * `key_pair` - Specify an existing SSH key pair
+* `image_id`
 * `volume_size`  
 Furthermore you can configure the naming of the created infrastructure (per default everything gets prefixed with "tpot-", e.g. "tpot-router").
 

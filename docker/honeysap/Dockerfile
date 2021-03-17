@@ -4,15 +4,15 @@ FROM alpine:3.10
 ADD dist/ /root/dist/
 #
 # Install packages
-RUN apk -U --no-cache add \
+RUN sed -i 's/dl-cdn/dl-2/g' /etc/apk/repositories && \
+    apk -U --no-cache add \
             build-base \
             git \
 	    libstdc++ \
 	    py2-markupsafe \
             python2 \
             python2-dev \
-            py2-pip \
-            tcpdump && \
+            py2-pip && \
 #
 # Clone honeysap from git
 #    git clone --depth=1 https://github.com/SecureAuthCorp/HoneySAP /opt/honeysap && \

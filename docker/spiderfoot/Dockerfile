@@ -1,7 +1,8 @@
-FROM alpine:3.13
+FROM alpine:3.12
 #
 # Get and install dependencies & packages
-RUN apk -U --no-cache add \
+RUN sed -i 's/dl-cdn/dl-2/g' /etc/apk/repositories && \
+    apk -U --no-cache add \
             build-base \
             curl \
             git \
@@ -19,7 +20,6 @@ RUN apk -U --no-cache add \
             python3 \
             python3-dev \
 	    py-cffi \
-	    py-cryptography \
 	    py-pillow \
             py-future \
             py3-pip \
@@ -33,13 +33,13 @@ RUN apk -U --no-cache add \
     adduser -S -s /bin/ash -u 2000 -D -g 2000 spiderfoot && \
 #
 # Install spiderfoot 
-    git clone --depth=1 -b v3.3 https://github.com/smicallef/spiderfoot /home/spiderfoot && \
+    git clone --depth=1 -b v3.2.1 https://github.com/smicallef/spiderfoot /home/spiderfoot && \
     cd /home/spiderfoot && \
     pip3 install --no-cache-dir wheel && \ 
     pip3 install --no-cache-dir -r requirements.txt && \ 
     chown -R spiderfoot:spiderfoot /home/spiderfoot && \
-    sed -i "s#'root': '\/'#'root': '\/spiderfoot'#" /home/spiderfoot/sf.py && \
-    sed -i "s#'root', '\/'#'root', '\/spiderfoot'#" /home/spiderfoot/sf.py && \
+    sed -i "s#'__docroot': ''#'__docroot': '\/spiderfoot'#" /home/spiderfoot/sf.py && \
+    sed -i 's#raise cherrypy.HTTPRedirect("\/")#raise cherrypy.HTTPRedirect("\/spiderfoot")#' /home/spiderfoot/sfwebui.py && \
 #
 # Clean up
     apk del --purge build-base \

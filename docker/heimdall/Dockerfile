@@ -1,10 +1,11 @@
-FROM alpine:3.13
+FROM alpine:3.12
 #
 # Include dist
 ADD dist/ /root/dist/
 #
 # Get and install dependencies & packages
-RUN apk -U --no-cache add \
+RUN sed -i 's/dl-cdn/dl-2/g' /etc/apk/repositories && \
+    apk -U --no-cache add \
       git \
       nginx \
       nginx-mod-http-headers-more \
@@ -28,15 +29,13 @@ RUN apk -U --no-cache add \
 # Clone and setup Heimdall, Nginx
     git clone https://github.com/linuxserver/heimdall && \
     cd heimdall && \
-    git checkout 61a5a1a8b023771e0ff7c056add5537d20737e51 && \
+    git checkout 3a9bdd2c431d70803b259990fa4d81db4b06dba4 && \
     cd .. && \
     cp -R heimdall/. /var/lib/nginx/html && \
     rm -rf heimdall && \
     cd /var/lib/nginx/html && \
     cp .env.example .env && \
-    # Fix error for ArrayInput in smyfony with regard to PHP7.4 (https://github.com/symfony/symfony/pull/32806/files)
-    sed -i "135s/.*/} elseif (0 === strpos(\$key, '-')) {/" /var/lib/nginx/html/vendor/symfony/console/Input/ArrayInput.php && \
-    php7 artisan key:generate && \
+    php artisan key:generate && \
 #
 ## Add previously configured content
     mkdir -p /var/lib/nginx/html/storage/app/public/backgrounds/ && \

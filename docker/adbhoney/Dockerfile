@@ -1,10 +1,11 @@
-FROM alpine:3.13
+FROM alpine:3.12
 #
 # Include dist
 ADD dist/ /root/dist/
 #
 # Install packages
-RUN apk -U add \
+RUN sed -i 's/dl-cdn/dl-2/g' /etc/apk/repositories && \
+    apk -U add \
             git \
             libcap \
 	    py3-pip \

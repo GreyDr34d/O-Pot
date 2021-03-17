@@ -4,6 +4,7 @@ FROM alpine:edge
 ADD dist/ /root/dist/
 #
 # Setup apt
+#RUN sed -i 's/dl-cdn/dl-2/g' /etc/apk/repositories && \
 RUN apk -U add \
              build-base \
              file \
@@ -16,20 +17,18 @@ RUN apk -U add \
              libxslt-dev \
              mariadb-dev \
              pkgconfig \
+	     py3-pip \
              python3 \
              python3-dev \
-             py3-cffi \
-             py3-cryptography \
-	     py3-gevent \
-	     py3-pip \
+             py-cffi \
+             py-cryptography \
              tcpdump \
              wget && \
 #
 # Setup ConPot
     git clone https://github.com/mushorg/conpot /opt/conpot && \
     cd /opt/conpot/ && \
-#    git checkout ff09e009d10d953aa7dcff2c06b7c890e6ffd4b7 && \
-    git checkout 804fd65aa3b7ffa31c07fd4e863d4a5500414cf3 && \
+    git checkout ff09e009d10d953aa7dcff2c06b7c890e6ffd4b7 && \
     # Change template default ports if <1024
     sed -i 's/port="2121"/port="21"/' /opt/conpot/conpot/templates/default/ftp/ftp.xml && \ 
     sed -i 's/port="8800"/port="80"/' /opt/conpot/conpot/templates/default/http/http.xml && \ 

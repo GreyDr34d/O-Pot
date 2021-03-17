@@ -1,17 +1,16 @@
-FROM node:14.15.4-alpine
+FROM node:10.22.1-alpine
 #
 # VARS
-ENV KB_VER=7.11.1
+ENV KB_VER=7.10.1
 # 
 # Include dist
 ADD dist/ /root/dist/
 #
 # Setup env and apt
-#RUN sed -i 's/dl-cdn/dl-2/g' /etc/apk/repositories && \
-RUN apk -U --no-cache add \
+RUN sed -i 's/dl-cdn/dl-2/g' /etc/apk/repositories && \
+    apk -U --no-cache add \
             aria2 \
-            curl \
-            gcompat && \
+            curl && \
 #
 # Get and install packages
     cd /root/dist/ && \
@@ -49,7 +48,6 @@ RUN apk -U --no-cache add \
     echo "xpack.uptime.enabled: false" >> /usr/share/kibana/config/kibana.yml && \
     echo "xpack.securitySolution.enabled: false" >> /usr/share/kibana/config/kibana.yml && \
     echo "xpack.ml.enabled: false" >> /usr/share/kibana/config/kibana.yml && \
-    echo "xpack.fleet.enabled: false" >> /usr/share/kibana/config/kibana.yml && \
     echo "elasticsearch.requestTimeout: 60000" >> /usr/share/kibana/config/kibana.yml && \
     echo "elasticsearch.shardTimeout: 60000" >> /usr/share/kibana/config/kibana.yml && \
 # There is no switch to disable Enterprise Search, so we need to remove it

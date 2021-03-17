@@ -1,0 +1,4 @@
+FROM "kitabisa/teler"
+
+COPY ./start.sh /start.sh
+COPY ./teler.yaml /teler.yaml

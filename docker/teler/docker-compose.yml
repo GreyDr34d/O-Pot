@@ -1,0 +1,17 @@
+version: '2.3'
+
+services: 
+  teler:
+    container_name: teler_test
+    build:
+      context: .
+    volumes: 
+      - "./teler.yaml:/teler.yaml"
+      # - "/data/openresty/log/access_8080.log:/access.log"
+      - "./access.log:/access.log"
+      - "./teler-resources/:/.cache/teler-resources/"
+      - "./start.sh:/start.sh"
+      - "./result.json:/result.json"
+    entrypoint: /bin/sh
+    command: /start.sh
+    tty: true
