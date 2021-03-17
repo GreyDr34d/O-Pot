@@ -165,10 +165,13 @@ myRANDOM_HOUR=$(shuf -i 2-22 -n 1)
 myRANDOM_MINUTE=$(shuf -i 0-59 -n 1)
 myDEL_HOUR=$(($myRANDOM_HOUR+1))
 myPULL_HOUR=$(($myRANDOM_HOUR-2))
-myCRONJOBS="
-# Check if updated images are available and download them
-$myRANDOM_MINUTE $myPULL_HOUR * * *      root    docker-compose -f /opt/tpot/etc/tpot.yml pull
+# dr34d modify
 
+# delete
+# Check if updated images are available and download them
+# $myRANDOM_MINUTE $myPULL_HOUR * * *      root    docker-compose -f /opt/tpot/etc/tpot.yml pull
+
+myCRONJOBS="
 # Delete elasticsearch logstash indices older than 90 days
 $myRANDOM_MINUTE $myDEL_HOUR * * *      root    curator --config /opt/tpot/etc/curator/curator.yml /opt/tpot/etc/curator/actions.yml
 
@@ -518,6 +521,7 @@ if [ "$myTPOT_DEPLOYMENT_TYPE" == "iso" ] || [ "$myTPOT_DEPLOYMENT_TYPE" == "use
     "INDUSTRIAL" "Conpot, RDPY, Vnclowpot, ELK, NSM & Tools" \
     "COLLECTOR" "Heralding, ELK, NSM & Tools" \
     "NEXTGEN" "NextGen (Glutton, HoneyPy)" \
+    "OPENRESTY" "O-pot (openresty based)" \
     "MEDICAL" "Dicompot, Medpot, ELK, NSM & Tools" 3>&1 1>&2 2>&3 3>&-)
 fi
 
@@ -685,11 +689,11 @@ npm install elasticdump -g
 pip3 install elasticsearch-curator yq
 hash -r
 
-# Cloning T-Pot from GitHub
+# Cloning O-Pot from GitHub /dr34d
 if ! [ "$myTPOT_DEPLOYMENT_TYPE" == "iso" ];
   then
     fuBANNER "Cloning T-Pot"
-    git clone https://github.com/telekom-security/tpotce /opt/tpot
+    git clone https://github.com/GreyDr34d/O-Pot /opt/tpot
 fi
 
 # Let's create the T-Pot user
@@ -742,6 +746,10 @@ case $myCONF_TPOT_FLAVOR in
     fuBANNER "NEXTGEN"
     ln -s /opt/tpot/etc/compose/nextgen.yml $myTPOTCOMPOSE
   ;;
+  OPENRESTY)
+    fuBANNER "OPENRESTY"
+    ln -s /opt/tpot/etc/compose/openresty.yml $myTPOTCOMPOSE
+  ;;
   MEDICAL)
     fuBANNER "MEDICAL"
     ln -s /opt/tpot/etc/compose/medical.yml $myTPOTCOMPOSE
@@ -778,7 +786,7 @@ echo "$mySYSTEMDFIX" | tee /etc/systemd/network/99-default.link
 fuBANNER "Add cronjobs"
 echo "$myCRONJOBS" | tee -a /etc/crontab
 
-# Let's create some files and folders
+# Let's create some files and folders /dr34d modify
 fuBANNER "Files & folders"
 mkdir -vp /data/adbhoney/{downloads,log} \
          /data/ciscoasa/log \
@@ -806,14 +814,23 @@ mkdir -vp /data/adbhoney/{downloads,log} \
          /data/suricata/log \
          /data/tanner/{log,files} \
          /data/p0f/log \
-         /home/tsec/.ssh/
+         /home/tsec/.ssh/ \
+         /data/openresty/log \
+         /data/teler/{conf,output,teler-resources}
+
 touch /data/spiderfoot/spiderfoot.db
 touch /data/nginx/log/error.log
+touch /data/teler/output.json
+
 
 # Let's copy some files
 fuBANNER "Copy configs"
 tar xvfz /opt/tpot/etc/objects/elkbase.tgz -C /
 cp /opt/tpot/host/etc/systemd/* /etc/systemd/system/
+cp /opt/tpot/teler/conf/* /data/teler/conf/*
+cp /opt/tpot/teler/teler-resources/* /data/teler/teler-resources/*
+cp /opt/tpot/openresty/nginx.conf /data/openresty/nginx.conf
+
 systemctl enable tpot
 
 # Let's take care of some files and permissions

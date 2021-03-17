@@ -269,6 +269,19 @@ fuTANNER () {
   chown tpot:tpot -R /data/tanner
 }
 
+fuOPENRESTY () {
+  if [ "$myPERSISTENCE" != "on" ]; then rm -rf /data/openresty/log/*; fi 
+  chmod 770 -R /data/openresty
+  chown tpot:tpot -R /data/openresty
+}
+
+fuTELER () {
+  if [ "$myPERSISTENCE" != "on" ]; then rm -rf /data/teler/output/*; fi
+  touch /data/teler/output/result.json
+  chmod 770 -R /data/teler
+  chown tpot:tpot -R /data/teler
+}
+
 # Avoid unwanted cleaning
 if [ "$myPERSISTENCE" = "" ];
   then
@@ -315,4 +328,6 @@ if [ "$myPERSISTENCE" = "on" ];
     fuSURICATA
     fuP0F
     fuTANNER
+    fuOPENRESTY
+    fuTELER
   fi

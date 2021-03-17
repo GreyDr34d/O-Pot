@@ -462,7 +462,7 @@ services:
 # Teler service
   teler:
     container_name: teler_analysis
-    image: "kitabisa/teler"
+    image: "dr34d/teler:latest"
     restart: always
     depends_on:
       logstash:
@@ -553,7 +553,7 @@ services:
     mem_limit: 4g
     ports:
      - "127.0.0.1:64298:9200"
-    image: "dtagdevsec/elasticsearch:2006"
+    image: "dr34d/tpot-elasticsearch:7.10.1"
     volumes:
      - /data:/data
 
@@ -566,7 +566,7 @@ services:
         condition: service_healthy
     ports:
      - "127.0.0.1:64296:5601"
-    image: "dtagdevsec/kibana:2006"
+    image: "dr34d/tpot-kibana:7.10.1"
 
 ## Logstash service
   logstash:
@@ -579,7 +579,7 @@ services:
         condition: service_healthy
     env_file:
      - /opt/tpot/etc/compose/elk_environment
-    image: "dtagdevsec/logstash:2006"
+    image: "dr34d/tpot-logstash:7.10.1"
     volumes:
      - /data:/data
      - /data/logstash/conf/:/etc/logstash/conf.d/
@@ -594,7 +594,7 @@ services:
         condition: service_healthy
     ports:
      - "127.0.0.1:64302:9100"
-    image: "dtagdevsec/head:2006"
+    image: "dr34d/tpot-head:7.10.1"
     read_only: true
 
 # Ewsposter service
