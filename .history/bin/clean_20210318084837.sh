@@ -324,6 +324,6 @@ else
     fuSURICATA
     fuP0F
     fuTANNER
-    # fuOPENRESTY
-    # fuTELER
+    fuOPENRESTY
+    fuTELER
 fi
