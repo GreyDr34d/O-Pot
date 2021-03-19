@@ -820,7 +820,7 @@ mkdir -vp /data/adbhoney/{downloads,log} \
 
 touch /data/spiderfoot/spiderfoot.db
 touch /data/nginx/log/error.log
-touch /data/teler/output/result.json
+touch /data/teler/output/output.json
 
 
 # Let's copy some files
@@ -829,7 +829,6 @@ tar xvfz /opt/tpot/etc/objects/elkbase.tgz -C /
 cp /opt/tpot/host/etc/systemd/* /etc/systemd/system/
 cp /opt/tpot/docker/teler/conf/* /data/teler/conf/*
 cp /opt/tpot/docker/teler/teler-resources/* /data/teler/teler-resources/*
-cp /opt/tpot/docker/openresty/nginx.conf /data/openresty/
 # cp /opt/tpot/openresty/nginx.conf /data/openresty/nginx.conf
 
 systemctl enable tpot
