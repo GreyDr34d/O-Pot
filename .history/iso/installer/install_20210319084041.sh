@@ -816,7 +816,7 @@ mkdir -vp /data/adbhoney/{downloads,log} \
          /data/p0f/log \
          /home/tsec/.ssh/ \
          /data/openresty/log \
-         /data/teler/{conf,output,teler-resources} 
+         /data/teler/{conf,output,teler-resources}
 
 touch /data/spiderfoot/spiderfoot.db
 touch /data/nginx/log/error.log

@@ -582,7 +582,7 @@ services:
     image: "dr34d/tpot-logstash:7.10.1"
     volumes:
      - /data:/data
-     - /opt/tpot/etc/logstash/conf/:/etc/logstash/conf.d/
+     - /data/logstash/conf/:/etc/logstash/conf.d/
 
 
 ## Elasticsearch-head service
