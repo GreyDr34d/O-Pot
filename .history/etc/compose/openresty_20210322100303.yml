@@ -11,7 +11,7 @@ networks:
   # conpot_local_ipmi:
   # conpot_local_kamstrup_382:
   # cowrie_local:
-  # cyberchef_local:
+  cyberchef_local:
   # dicompot_local:
   # dionaea_local:
   # elasticpot_local:
@@ -298,20 +298,20 @@ services:
 #      - /data/honeysap/log:/opt/honeysap/log
 
 # Honeytrap service
-  # honeytrap:
-  #   container_name: honeytrap
-  #   restart: always
-  #   tmpfs:
-  #    - /tmp/honeytrap:uid=2000,gid=2000
-  #   network_mode: "host"
-  #   cap_add:
-  #    - NET_ADMIN
-  #   image: "dtagdevsec/honeytrap:2006"
-  #   read_only: true
-  #   volumes:
-  #    - /data/honeytrap/attacks:/opt/honeytrap/var/attacks
-  #    - /data/honeytrap/downloads:/opt/honeytrap/var/downloads
-  #    - /data/honeytrap/log:/opt/honeytrap/var/log
+  honeytrap:
+    container_name: honeytrap
+    restart: always
+    tmpfs:
+     - /tmp/honeytrap:uid=2000,gid=2000
+    network_mode: "host"
+    cap_add:
+     - NET_ADMIN
+    image: "dtagdevsec/honeytrap:2006"
+    read_only: true
+    volumes:
+     - /data/honeytrap/attacks:/opt/honeytrap/var/attacks
+     - /data/honeytrap/downloads:/opt/honeytrap/var/downloads
+     - /data/honeytrap/log:/opt/honeytrap/var/log
 
 # # Mailoney service
 #   mailoney:
@@ -522,15 +522,15 @@ services:
 ##################
 
 # Cyberchef service
-#   cyberchef:
-#     container_name: cyberchef
-#     restart: always
-#     networks:
-#      - cyberchef_local
-#     ports:
-#      - "127.0.0.1:64299:8000"
-#     image: "dtagdevsec/cyberchef:2006"
-#     read_only: true
+  cyberchef:
+    container_name: cyberchef
+    restart: always
+    networks:
+     - cyberchef_local
+    ports:
+     - "127.0.0.1:64299:8000"
+    image: "dtagdevsec/cyberchef:2006"
+    read_only: true
 
 #### ELK
 ## Elasticsearch service
