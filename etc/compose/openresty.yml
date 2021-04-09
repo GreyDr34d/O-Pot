@@ -462,7 +462,7 @@ services:
 # Teler service
   teler:
     container_name: teler_analysis
-    image: "dr34d/teler:latest"
+    image: "dr34d/teler:ml_api"
     restart: always
     depends_on:
       logstash:
