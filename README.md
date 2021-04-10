@@ -1,6 +1,6 @@
-![T-Pot](doc/tpotsocial.png)
+![O-Pot](doc/tpotsocial.png)
 
-T-Pot 20.06 runs on Debian (Stable), is based heavily on
+O-pot is based on T-Pot 20.06 which runs on Debian (Stable), is based heavily on
 
 [docker](https://www.docker.com/), [docker-compose](https://docs.docker.com/compose/)
 
