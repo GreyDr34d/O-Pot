@@ -516,13 +516,9 @@ if [ "$myTPOT_DEPLOYMENT_TYPE" == "iso" ] || [ "$myTPOT_DEPLOYMENT_TYPE" == "use
   then
     myCONF_TPOT_FLAVOR=$(dialog --keep-window --no-cancel --backtitle "$myBACKTITLE" --title "[ Choose Your O-Pot Edition ]" --menu \
     "\nRequired: 8GB RAM, 128GB SSD\nRecommended: 8GB RAM, 256GB SSD" 15 70 6 \
-    "STANDARD" "Honeypots, ELK, NSM & Tools" \
-    "SENSOR" "Just Honeypots, EWS Poster & NSM" \
-    "INDUSTRIAL" "Conpot, RDPY, Vnclowpot, ELK, NSM & Tools" \
     "COLLECTOR" "Heralding, ELK, NSM & Tools" \
-    "NEXTGEN" "NextGen (Glutton, HoneyPy)" \
     "OPENRESTY" "O-pot (openresty based)" \
-    "MEDICAL" "Dicompot, Medpot, ELK, NSM & Tools" 3>&1 1>&2 2>&3 3>&-)
+    "OPENRESTY_SENSOR" "Dicompot, Medpot, ELK, NSM & Tools" 3>&1 1>&2 2>&3 3>&-)
 fi
 
 # Let's ask for a secure tsec password if installation type is iso
@@ -726,33 +722,17 @@ sed -i '2i\auth requisite pam_succeed_if.so uid >= 1000' /etc/pam.d/cockpit
 
 # Let's make sure only myCONF_TPOT_FLAVOR images will be downloaded and started
 case $myCONF_TPOT_FLAVOR in
-  STANDARD)
-    fuBANNER "STANDARD"
-    ln -s /opt/tpot/etc/compose/standard.yml $myTPOTCOMPOSE
-  ;;
-  SENSOR)
-    fuBANNER "SENSOR"
-    ln -s /opt/tpot/etc/compose/sensor.yml $myTPOTCOMPOSE
-  ;;
-  INDUSTRIAL)
-    fuBANNER "INDUSTRIAL"
-    ln -s /opt/tpot/etc/compose/industrial.yml $myTPOTCOMPOSE
-  ;;
   COLLECTOR)
     fuBANNER "COLLECTOR"
     ln -s /opt/tpot/etc/compose/collector.yml $myTPOTCOMPOSE
-  ;;
-  NEXTGEN)
-    fuBANNER "NEXTGEN"
-    ln -s /opt/tpot/etc/compose/nextgen.yml $myTPOTCOMPOSE
   ;;
   OPENRESTY)
     fuBANNER "OPENRESTY"
     ln -s /opt/tpot/etc/compose/openresty.yml $myTPOTCOMPOSE
   ;;
-  MEDICAL)
-    fuBANNER "MEDICAL"
-    ln -s /opt/tpot/etc/compose/medical.yml $myTPOTCOMPOSE
+  OPENRESTY_SENSOR)
+    fuBANNER "OPENRESTY_SENSOR"
+    ln -s /opt/tpot/etc/compose/openresty_sensor.yml $myTPOTCOMPOSE
   ;;
 esac
 
@@ -816,19 +796,20 @@ mkdir -vp /data/adbhoney/{downloads,log} \
          /data/p0f/log \
          /home/tsec/.ssh/ \
          /data/openresty/log \
-         /data/teler/{conf,output,teler-resources}
+         /data/teler/output
 
 touch /data/spiderfoot/spiderfoot.db
 touch /data/nginx/log/error.log
-touch /data/teler/output.json
+touch /data/teler/output/result.json
 
 
 # Let's copy some files
 fuBANNER "Copy configs"
 tar xvfz /opt/tpot/etc/objects/elkbase.tgz -C /
 cp /opt/tpot/host/etc/systemd/* /etc/systemd/system/
-cp /opt/tpot/teler/conf/* /data/teler/conf/*
-cp /opt/tpot/teler/teler-resources/* /data/teler/teler-resources/*
+cp -R /opt/tpot/docker/teler/conf /data/teler/
+cp -R /opt/tpot/docker/teler/teler-resources /data/teler/
+cp /opt/tpot/docker/openresty/nginx.conf /data/openresty/
 # cp /opt/tpot/openresty/nginx.conf /data/openresty/nginx.conf
 
 systemctl enable tpot
