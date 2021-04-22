@@ -483,15 +483,6 @@ services:
     tty: true
 
 
-  python:
-    container_name: ml_analysis
-    image: "dr34d/ml_analysis:latest"
-    restart: always
-    tty: true
-    ports: 
-      - "127.0.0.1:64290:64290"
-    entrypoint: "python main.py"
-
 # Fatt service
   fatt:
     container_name: fatt

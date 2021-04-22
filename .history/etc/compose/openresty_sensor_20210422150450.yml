@@ -11,18 +11,18 @@ networks:
   # conpot_local_ipmi:
   # conpot_local_kamstrup_382:
   # cowrie_local:
-  cyberchef_local:
+  # cyberchef_local:
   # dicompot_local:
   # dionaea_local:
   # elasticpot_local:
-  heralding_local:
+  # heralding_local:
   # honeysap_local:
   # mailoney_local:
   # medpot_local:
   # rdpy_local:
   # tanner_local:
-  ewsposter_local:
-  spiderfoot_local:
+  # ewsposter_local:
+  # spiderfoot_local:
 
 services:
 
@@ -34,12 +34,27 @@ services:
     image: "openresty/openresty:1.19.3.1-2-alpine"
     container_name: openresty_honey_pot
     ports: 
+      - "80:80"
+      - "81:81"
       - "8080:8080"
-      # - "80:80"
+      - "8081:8081"
+      - "8089:8089"
+      - "9000:9000"
+      - "10000:10000"
+
     volumes:
       - "/data/openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
       - "/data/openresty/log:/usr/local/openresty/nginx/logs"
     
+
+  python:
+    container_name: ml_analysis
+    image: "dr34d/ml_analysis:latest"
+    restart: always
+    tty: true
+    ports: 
+      - "127.0.0.1:64290:64290"
+    entrypoint: "python main.py"
 
 # # Adbhoney service
 #   adbhoney:
@@ -257,33 +272,33 @@ services:
 #      - /data/elasticpot/log:/opt/elasticpot/log
 
 # Heralding service
-  heralding:
-    container_name: heralding
-    restart: always
-    tmpfs:
-     - /tmp/heralding:uid=2000,gid=2000
-    networks:
-     - heralding_local
-    ports:
-    # - "21:21"
-    # - "22:22"
-    # - "23:23"
-    # - "25:25"
-    # - "80:80"
-     - "110:110"
-     - "143:143"
-    # - "443:443"
-     - "993:993"
-     - "995:995"
-    # - "3306:3306"
-    # - "3389:3389"
-     - "1080:1080"
-     - "5432:5432"
-     - "5900:5900"
-    image: "dtagdevsec/heralding:2006"
-    read_only: true
-    volumes:
-     - /data/heralding/log:/var/log/heralding
+  # heralding:
+  #   container_name: heralding
+  #   restart: always
+  #   tmpfs:
+  #    - /tmp/heralding:uid=2000,gid=2000
+  #   networks:
+  #    - heralding_local
+  #   ports:
+  #   # - "21:21"
+  #   # - "22:22"
+  #   # - "23:23"
+  #   # - "25:25"
+  #   # - "80:80"
+  #    - "110:110"
+  #    - "143:143"
+  #   # - "443:443"
+  #    - "993:993"
+  #    - "995:995"
+  #   # - "3306:3306"
+  #   # - "3389:3389"
+  #    - "1080:1080"
+  #    - "5432:5432"
+  #    - "5900:5900"
+  #   image: "dtagdevsec/heralding:2006"
+  #   read_only: true
+  #   volumes:
+  #    - /data/heralding/log:/var/log/heralding
 
 # # HoneySAP service
 #   honeysap:
@@ -298,20 +313,20 @@ services:
 #      - /data/honeysap/log:/opt/honeysap/log
 
 # Honeytrap service
-  honeytrap:
-    container_name: honeytrap
-    restart: always
-    tmpfs:
-     - /tmp/honeytrap:uid=2000,gid=2000
-    network_mode: "host"
-    cap_add:
-     - NET_ADMIN
-    image: "dtagdevsec/honeytrap:2006"
-    read_only: true
-    volumes:
-     - /data/honeytrap/attacks:/opt/honeytrap/var/attacks
-     - /data/honeytrap/downloads:/opt/honeytrap/var/downloads
-     - /data/honeytrap/log:/opt/honeytrap/var/log
+  # honeytrap:
+  #   container_name: honeytrap
+  #   restart: always
+  #   tmpfs:
+  #    - /tmp/honeytrap:uid=2000,gid=2000
+  #   network_mode: "host"
+  #   cap_add:
+  #    - NET_ADMIN
+  #   image: "dtagdevsec/honeytrap:2006"
+  #   read_only: true
+  #   volumes:
+  #    - /data/honeytrap/attacks:/opt/honeytrap/var/attacks
+  #    - /data/honeytrap/downloads:/opt/honeytrap/var/downloads
+  #    - /data/honeytrap/log:/opt/honeytrap/var/log
 
 # # Mailoney service
 #   mailoney:
@@ -462,7 +477,7 @@ services:
 # Teler service
   teler:
     container_name: teler_analysis
-    image: "dr34d/teler:latest"
+    image: "dr34d/teler:ml_api"
     restart: always
     depends_on:
       logstash:
@@ -491,30 +506,30 @@ services:
      - /data/fatt/log:/opt/fatt/log
 
 # P0f service
-  p0f:
-    container_name: p0f
-    restart: always
-    network_mode: "host"
-    image: "dtagdevsec/p0f:2006"
-    read_only: true
-    volumes:
-     - /data/p0f/log:/var/log/p0f
+  # p0f:
+  #   container_name: p0f
+  #   restart: always
+  #   network_mode: "host"
+  #   image: "dtagdevsec/p0f:2006"
+  #   read_only: true
+  #   volumes:
+  #    - /data/p0f/log:/var/log/p0f
 
 # Suricata service
-  suricata:
-    container_name: suricata
-    restart: always
-    environment:
-    # For ET Pro ruleset replace "OPEN" with your OINKCODE
-     - OINKCODE=OPEN
-    network_mode: "host"
-    cap_add:
-     - NET_ADMIN
-     - SYS_NICE
-     - NET_RAW
-    image: "dtagdevsec/suricata:2006"
-    volumes:
-     - /data/suricata/log:/var/log/suricata
+  # suricata:
+  #   container_name: suricata
+  #   restart: always
+  #   environment:
+  #   # For ET Pro ruleset replace "OPEN" with your OINKCODE
+  #    - OINKCODE=OPEN
+  #   network_mode: "host"
+  #   cap_add:
+  #    - NET_ADMIN
+  #    - SYS_NICE
+  #    - NET_RAW
+  #   image: "dtagdevsec/suricata:2006"
+  #   volumes:
+  #    - /data/suricata/log:/var/log/suricata
 
 
 ##################
@@ -522,144 +537,144 @@ services:
 ##################
 
 # Cyberchef service
-  cyberchef:
-    container_name: cyberchef
-    restart: always
-    networks:
-     - cyberchef_local
-    ports:
-     - "127.0.0.1:64299:8000"
-    image: "dtagdevsec/cyberchef:2006"
-    read_only: true
+#   cyberchef:
+#     container_name: cyberchef
+#     restart: always
+#     networks:
+#      - cyberchef_local
+#     ports:
+#      - "127.0.0.1:64299:8000"
+#     image: "dtagdevsec/cyberchef:2006"
+#     read_only: true
 
 #### ELK
 ## Elasticsearch service
-  elasticsearch:
-    container_name: elasticsearch
-    restart: always
-    environment:
-     - bootstrap.memory_lock=true
-     - ES_JAVA_OPTS=-Xms2048m -Xmx2048m
-     - ES_TMPDIR=/tmp
-    cap_add:
-     - IPC_LOCK
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    mem_limit: 4g
-    ports:
-     - "127.0.0.1:64298:9200"
-    image: "dr34d/tpot-elasticsearch:7.10.1"
-    volumes:
-     - /data:/data
+#   elasticsearch:
+#     container_name: elasticsearch
+#     restart: always
+#     environment:
+#      - bootstrap.memory_lock=true
+#      - ES_JAVA_OPTS=-Xms2048m -Xmx2048m
+#      - ES_TMPDIR=/tmp
+#     cap_add:
+#      - IPC_LOCK
+#     ulimits:
+#       memlock:
+#         soft: -1
+#         hard: -1
+#       nofile:
+#         soft: 65536
+#         hard: 65536
+#     mem_limit: 4g
+#     ports:
+#      - "127.0.0.1:64298:9200"
+#     image: "dr34d/tpot-elasticsearch:7.10.1"
+#     volumes:
+#      - /data:/data
 
-## Kibana service
-  kibana:
-    container_name: kibana
-    restart: always
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    ports:
-     - "127.0.0.1:64296:5601"
-    image: "dr34d/tpot-kibana:7.10.1"
+# ## Kibana service
+#   kibana:
+#     container_name: kibana
+#     restart: always
+#     depends_on:
+#       elasticsearch:
+#         condition: service_healthy
+#     ports:
+#      - "127.0.0.1:64296:5601"
+#     image: "dr34d/tpot-kibana:7.10.1"
 
-## Logstash service
-  logstash:
-    container_name: logstash
-    restart: always
-    environment:
-     - LS_JAVA_OPTS=-Xms2048m -Xmx2048m
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    env_file:
-     - /opt/tpot/etc/compose/elk_environment
-    image: "dr34d/tpot-logstash:7.10.1"
-    volumes:
-     - /data:/data
-     - /data/logstash/conf/:/etc/logstash/conf.d/
+# ## Logstash service
+#   logstash:
+#     container_name: logstash
+#     restart: always
+#     environment:
+#      - LS_JAVA_OPTS=-Xms2048m -Xmx2048m
+#     depends_on:
+#       elasticsearch:
+#         condition: service_healthy
+#     env_file:
+#      - /opt/tpot/etc/compose/elk_environment
+#     image: "dr34d/tpot-logstash:7.10.1"
+#     volumes:
+#      - /data:/data
+#      - /opt/tpot/etc/logstash/conf/:/etc/logstash/conf.d/
 
 
-## Elasticsearch-head service
-  head:
-    container_name: head
-    restart: always
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    ports:
-     - "127.0.0.1:64302:9100"
-    image: "dr34d/tpot-head:7.10.1"
-    read_only: true
+# ## Elasticsearch-head service
+#   head:
+#     container_name: head
+#     restart: always
+#     depends_on:
+#       elasticsearch:
+#         condition: service_healthy
+#     ports:
+#      - "127.0.0.1:64302:9100"
+#     image: "dr34d/tpot-head:7.10.1"
+#     read_only: true
 
 # Ewsposter service
-  ewsposter:
-    container_name: ewsposter
-    restart: always
-    networks:
-     - ewsposter_local
-    environment:
-     - EWS_HPFEEDS_ENABLE=false
-     - EWS_HPFEEDS_HOST=host
-     - EWS_HPFEEDS_PORT=port
-     - EWS_HPFEEDS_CHANNELS=channels
-     - EWS_HPFEEDS_IDENT=user
-     - EWS_HPFEEDS_SECRET=secret
-     - EWS_HPFEEDS_TLSCERT=false
-     - EWS_HPFEEDS_FORMAT=json
-    env_file:
-     - /opt/tpot/etc/compose/elk_environment
-    image: "dtagdevsec/ewsposter:2006"
-    volumes:
-     - /data:/data
-     - /data/ews/conf/ews.ip:/opt/ewsposter/ews.ip
+  # ewsposter:
+  #   container_name: ewsposter
+  #   restart: always
+  #   networks:
+  #    - ewsposter_local
+  #   environment:
+  #    - EWS_HPFEEDS_ENABLE=false
+  #    - EWS_HPFEEDS_HOST=host
+  #    - EWS_HPFEEDS_PORT=port
+  #    - EWS_HPFEEDS_CHANNELS=channels
+  #    - EWS_HPFEEDS_IDENT=user
+  #    - EWS_HPFEEDS_SECRET=secret
+  #    - EWS_HPFEEDS_TLSCERT=false
+  #    - EWS_HPFEEDS_FORMAT=json
+  #   env_file:
+  #    - /opt/tpot/etc/compose/elk_environment
+  #   image: "dtagdevsec/ewsposter:2006"
+  #   volumes:
+  #    - /data:/data
+  #    - /data/ews/conf/ews.ip:/opt/ewsposter/ews.ip
 
 # Nginx service
-  nginx:
-    container_name: nginx
-    restart: always
-    environment:
-    ### If set to YES all changes within Heimdall will remain for the next start
-    ### Make sure to uncomment the corresponding volume statements below, or the setting will prevent a successful start of T-Pot.
-     - HEIMDALL_PERSIST=NO
-    tmpfs:
-     - /var/tmp/nginx/client_body
-     - /var/tmp/nginx/proxy
-     - /var/tmp/nginx/fastcgi
-     - /var/tmp/nginx/uwsgi
-     - /var/tmp/nginx/scgi 
-     - /run
-     - /var/log/php7/
-     - /var/lib/nginx/tmp:uid=100,gid=82 
-     - /var/lib/nginx/html/storage/logs:uid=100,gid=82
-     - /var/lib/nginx/html/storage/framework/views:uid=100,gid=82
-    network_mode: "host"
-    ports:
-     - "64297:64297"
-     - "127.0.0.1:64304:64304"
-    image: "dtagdevsec/nginx:2006"
-    read_only: true
-    volumes:
-     - /data/nginx/cert/:/etc/nginx/cert/:ro
-     - /data/nginx/conf/nginxpasswd:/etc/nginx/nginxpasswd:ro
-     - /data/nginx/log/:/var/log/nginx/
+  # nginx:
+  #   container_name: nginx
+  #   restart: always
+  #   environment:
+  #   ### If set to YES all changes within Heimdall will remain for the next start
+  #   ### Make sure to uncomment the corresponding volume statements below, or the setting will prevent a successful start of T-Pot.
+  #    - HEIMDALL_PERSIST=NO
+  #   tmpfs:
+  #    - /var/tmp/nginx/client_body
+  #    - /var/tmp/nginx/proxy
+  #    - /var/tmp/nginx/fastcgi
+  #    - /var/tmp/nginx/uwsgi
+  #    - /var/tmp/nginx/scgi 
+  #    - /run
+  #    - /var/log/php7/
+  #    - /var/lib/nginx/tmp:uid=100,gid=82 
+  #    - /var/lib/nginx/html/storage/logs:uid=100,gid=82
+  #    - /var/lib/nginx/html/storage/framework/views:uid=100,gid=82
+  #   network_mode: "host"
+  #   ports:
+  #    - "64297:64297"
+  #    - "127.0.0.1:64304:64304"
+  #   image: "dtagdevsec/nginx:2006"
+  #   read_only: true
+  #   volumes:
+  #    - /data/nginx/cert/:/etc/nginx/cert/:ro
+  #    - /data/nginx/conf/nginxpasswd:/etc/nginx/nginxpasswd:ro
+  #    - /data/nginx/log/:/var/log/nginx/
     ### Enable the following volumes if you set HEIMDALL_PERSIST=YES
     # - /data/nginx/heimdall/database:/var/lib/nginx/html/database
     # - /data/nginx/heimdall/storage:/var/lib/nginx/html/storage
 
 # Spiderfoot service
-  spiderfoot:
-    container_name: spiderfoot
-    restart: always
-    networks:
-     - spiderfoot_local
-    ports:
-     - "127.0.0.1:64303:8080"
-    image: "dtagdevsec/spiderfoot:2006"
-    volumes:
-     - /data/spiderfoot/spiderfoot.db:/home/spiderfoot/spiderfoot.db
+  # spiderfoot:
+  #   container_name: spiderfoot
+  #   restart: always
+  #   networks:
+  #    - spiderfoot_local
+  #   ports:
+  #    - "127.0.0.1:64303:8080"
+  #   image: "dtagdevsec/spiderfoot:2006"
+  #   volumes:
+  #    - /data/spiderfoot/spiderfoot.db:/home/spiderfoot/spiderfoot.db

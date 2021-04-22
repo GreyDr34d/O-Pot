@@ -22,7 +22,7 @@ networks:
   # rdpy_local:
   # tanner_local:
   # ewsposter_local:
-  spiderfoot_local:
+  # spiderfoot_local:
 
 services:
 
@@ -46,6 +46,15 @@ services:
       - "/data/openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
       - "/data/openresty/log:/usr/local/openresty/nginx/logs"
     
+
+  python:
+    container_name: ml_analysis
+    image: "dr34d/ml_analysis:latest"
+    restart: always
+    tty: true
+    ports: 
+      - "127.0.0.1:64290:64290"
+    entrypoint: "python main.py"
 
 # # Adbhoney service
 #   adbhoney:
@@ -483,15 +492,6 @@ services:
     tty: true
 
 
-  python:
-    container_name: ml_analysis
-    image: "dr34d/ml_analysis:latest"
-    restart: always
-    tty: true
-    ports: 
-      - "127.0.0.1:64290:64290"
-    entrypoint: "python main.py"
-
 # Fatt service
   fatt:
     container_name: fatt
@@ -549,68 +549,68 @@ services:
 
 #### ELK
 ## Elasticsearch service
-  elasticsearch:
-    container_name: elasticsearch
-    restart: always
-    environment:
-     - bootstrap.memory_lock=true
-     - ES_JAVA_OPTS=-Xms2048m -Xmx2048m
-     - ES_TMPDIR=/tmp
-    cap_add:
-     - IPC_LOCK
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    mem_limit: 4g
-    ports:
-     - "127.0.0.1:64298:9200"
-    image: "dr34d/tpot-elasticsearch:7.10.1"
-    volumes:
-     - /data:/data
+#   elasticsearch:
+#     container_name: elasticsearch
+#     restart: always
+#     environment:
+#      - bootstrap.memory_lock=true
+#      - ES_JAVA_OPTS=-Xms2048m -Xmx2048m
+#      - ES_TMPDIR=/tmp
+#     cap_add:
+#      - IPC_LOCK
+#     ulimits:
+#       memlock:
+#         soft: -1
+#         hard: -1
+#       nofile:
+#         soft: 65536
+#         hard: 65536
+#     mem_limit: 4g
+#     ports:
+#      - "127.0.0.1:64298:9200"
+#     image: "dr34d/tpot-elasticsearch:7.10.1"
+#     volumes:
+#      - /data:/data
 
-## Kibana service
-  kibana:
-    container_name: kibana
-    restart: always
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    ports:
-     - "127.0.0.1:64296:5601"
-    image: "dr34d/tpot-kibana:7.10.1"
+# ## Kibana service
+#   kibana:
+#     container_name: kibana
+#     restart: always
+#     depends_on:
+#       elasticsearch:
+#         condition: service_healthy
+#     ports:
+#      - "127.0.0.1:64296:5601"
+#     image: "dr34d/tpot-kibana:7.10.1"
 
-## Logstash service
-  logstash:
-    container_name: logstash
-    restart: always
-    environment:
-     - LS_JAVA_OPTS=-Xms2048m -Xmx2048m
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    env_file:
-     - /opt/tpot/etc/compose/elk_environment
-    image: "dr34d/tpot-logstash:7.10.1"
-    volumes:
-     - /data:/data
-     - /opt/tpot/etc/logstash/conf/:/etc/logstash/conf.d/
+# ## Logstash service
+#   logstash:
+#     container_name: logstash
+#     restart: always
+#     environment:
+#      - LS_JAVA_OPTS=-Xms2048m -Xmx2048m
+#     depends_on:
+#       elasticsearch:
+#         condition: service_healthy
+#     env_file:
+#      - /opt/tpot/etc/compose/elk_environment
+#     image: "dr34d/tpot-logstash:7.10.1"
+#     volumes:
+#      - /data:/data
+#      - /opt/tpot/etc/logstash/conf/:/etc/logstash/conf.d/
 
 
-## Elasticsearch-head service
-  head:
-    container_name: head
-    restart: always
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    ports:
-     - "127.0.0.1:64302:9100"
-    image: "dr34d/tpot-head:7.10.1"
-    read_only: true
+# ## Elasticsearch-head service
+#   head:
+#     container_name: head
+#     restart: always
+#     depends_on:
+#       elasticsearch:
+#         condition: service_healthy
+#     ports:
+#      - "127.0.0.1:64302:9100"
+#     image: "dr34d/tpot-head:7.10.1"
+#     read_only: true
 
 # Ewsposter service
   # ewsposter:
@@ -635,46 +635,46 @@ services:
   #    - /data/ews/conf/ews.ip:/opt/ewsposter/ews.ip
 
 # Nginx service
-  nginx:
-    container_name: nginx
-    restart: always
-    environment:
-    ### If set to YES all changes within Heimdall will remain for the next start
-    ### Make sure to uncomment the corresponding volume statements below, or the setting will prevent a successful start of T-Pot.
-     - HEIMDALL_PERSIST=NO
-    tmpfs:
-     - /var/tmp/nginx/client_body
-     - /var/tmp/nginx/proxy
-     - /var/tmp/nginx/fastcgi
-     - /var/tmp/nginx/uwsgi
-     - /var/tmp/nginx/scgi 
-     - /run
-     - /var/log/php7/
-     - /var/lib/nginx/tmp:uid=100,gid=82 
-     - /var/lib/nginx/html/storage/logs:uid=100,gid=82
-     - /var/lib/nginx/html/storage/framework/views:uid=100,gid=82
-    network_mode: "host"
-    ports:
-     - "64297:64297"
-     - "127.0.0.1:64304:64304"
-    image: "dtagdevsec/nginx:2006"
-    read_only: true
-    volumes:
-     - /data/nginx/cert/:/etc/nginx/cert/:ro
-     - /data/nginx/conf/nginxpasswd:/etc/nginx/nginxpasswd:ro
-     - /data/nginx/log/:/var/log/nginx/
+  # nginx:
+  #   container_name: nginx
+  #   restart: always
+  #   environment:
+  #   ### If set to YES all changes within Heimdall will remain for the next start
+  #   ### Make sure to uncomment the corresponding volume statements below, or the setting will prevent a successful start of T-Pot.
+  #    - HEIMDALL_PERSIST=NO
+  #   tmpfs:
+  #    - /var/tmp/nginx/client_body
+  #    - /var/tmp/nginx/proxy
+  #    - /var/tmp/nginx/fastcgi
+  #    - /var/tmp/nginx/uwsgi
+  #    - /var/tmp/nginx/scgi 
+  #    - /run
+  #    - /var/log/php7/
+  #    - /var/lib/nginx/tmp:uid=100,gid=82 
+  #    - /var/lib/nginx/html/storage/logs:uid=100,gid=82
+  #    - /var/lib/nginx/html/storage/framework/views:uid=100,gid=82
+  #   network_mode: "host"
+  #   ports:
+  #    - "64297:64297"
+  #    - "127.0.0.1:64304:64304"
+  #   image: "dtagdevsec/nginx:2006"
+  #   read_only: true
+  #   volumes:
+  #    - /data/nginx/cert/:/etc/nginx/cert/:ro
+  #    - /data/nginx/conf/nginxpasswd:/etc/nginx/nginxpasswd:ro
+  #    - /data/nginx/log/:/var/log/nginx/
     ### Enable the following volumes if you set HEIMDALL_PERSIST=YES
     # - /data/nginx/heimdall/database:/var/lib/nginx/html/database
     # - /data/nginx/heimdall/storage:/var/lib/nginx/html/storage
 
 # Spiderfoot service
-  spiderfoot:
-    container_name: spiderfoot
-    restart: always
-    networks:
-     - spiderfoot_local
-    ports:
-     - "127.0.0.1:64303:8080"
-    image: "dtagdevsec/spiderfoot:2006"
-    volumes:
-     - /data/spiderfoot/spiderfoot.db:/home/spiderfoot/spiderfoot.db
+  # spiderfoot:
+  #   container_name: spiderfoot
+  #   restart: always
+  #   networks:
+  #    - spiderfoot_local
+  #   ports:
+  #    - "127.0.0.1:64303:8080"
+  #   image: "dtagdevsec/spiderfoot:2006"
+  #   volumes:
+  #    - /data/spiderfoot/spiderfoot.db:/home/spiderfoot/spiderfoot.db
